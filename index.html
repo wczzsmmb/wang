@@ -1,0 +1,455 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jQuery流媒体音乐播放器特</title>
+<link rel="stylesheet" type="text/css" href="css/main.css">
+
+</head>
+<body>
+<input type="button" οnclick="history.go(-1)" value="back">
+<a href="javascript:history.go(-1)" >返回</a>
+<div class='jAudio--player'>
+
+<audio></audio>
+
+<div class='jAudio--ui'>
+
+  <div class='jAudio--thumb'></div>
+
+  <div class='jAudio--status-bar'>
+
+	<div class='jAudio--details'></div>
+	<div class='jAudio--volume-bar'></div>
+
+	<div class='jAudio--progress-bar'>
+	  <div class='jAudio--progress-bar-wrapper'>
+		<div class='jAudio--progress-bar-played'>
+		  <span class='jAudio--progress-bar-pointer'></span>
+		</div>
+	  </div>
+	</div>
+
+	<div class='jAudio--time'>
+	  <span class='jAudio--time-elapsed'>00:00</span>
+	  <span class='jAudio--time-total'>00:00</span>
+	</div>
+
+  </div>
+
+</div>
+
+
+<div class='jAudio--playlist'>
+</div>
+
+<div class='jAudio--controls'>
+  <ul>
+	<li><button class='btn' data-action='prev' id='btn-prev'><span></span></button></li>
+	<li><button class='btn' data-action='play' id='btn-play'><span></span></button></li>
+	<li><button class='btn' data-action='next' id='btn-next'><span></span></button></li>
+  </ul>
+</div>
+
+</div>
+
+<script src='js/jquery-2.1.4.min.js'></script>
+<script src='js/jaudio.js'></script>
+<script>
+var t = {
+	playlist:[
+	{
+		  file: "tracks/李宗盛-为你我受冷风吹 (Live).mp3",
+		  thumb: "thumbs/u=3909733598,2569736275&fm=74&app=80&f=JPEG&size=f121,140.jpg",
+		  trackName: "为你我受冷风吹",
+		  trackArtist: "李宗盛",
+		  trackAlbum: "Single",
+		},
+		{
+		  file: "tracks/Cii  -  我喜欢一个人没错啊(HD).mp3",
+		  thumb: "thumbs/29e31fba250041ce8a875713dbe7d08f!400x400.jpeg",
+		  trackName: "我喜欢一个人没错啊",
+		  trackArtist: "Cii",
+		  trackAlbum: "Single",
+		},
+		{
+		  file: "tracks/童珺  -  天下有情人 (国语版)(HD).mp3",
+		  thumb: "thumbs/psb.webp",
+		  trackName: "天下有情人",
+		  trackArtist: "童珺",
+		  trackAlbum: "Single",
+		},
+		{
+		  file: "tracks/巧乐兹  -  圈住你(HD).mp3",
+		  thumb: "thumbs/ps官方b.webp",
+		  trackName: "圈住你",
+		  trackArtist: "巧乐兹",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/莉哥 - 让我做你的眼睛.flac",
+		  thumb: "thumbs/u=1957218211,3142058778&fm=26&gp=0.jpg",
+		  trackName: "让我做你的眼睛",
+		  trackArtist: "莉哥",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/CANNIE(晴子)  -  你不是真正的快乐（Cover 五月天 Acoustic Ver.）(HD).mp3",
+		  thumb: "thumbs/ps突然她她她b.webp",
+		  trackName: "你不是真正的快乐",
+		  trackArtist: "CANNIE(晴子)",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/G2er  -  还有我(HD).mp3",
+		  thumb: "thumbs/ps大大降低b.webp",
+		  trackName: "还有我",
+		  trackArtist: "G2er",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/Kuriyama-  -  小宇（Cover：张震岳）(HD).mp3",
+		  thumb: "thumbs/ps打击敌方基地b.webp",
+		  trackName: "小宇",
+		  trackArtist: "Kuriyama",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/m1ao_er  -  撕夜（Cover：阿杜）(HD).mp3",
+		  thumb: "thumbs/ps佛法空b.webp",
+		  trackName: "撕夜",
+		  trackArtist: "m1ao_er",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/RAiNBOW计划 雷雨心  -  记念(HD).mp3",
+		  thumb: "thumbs/ps大大方方b.webp",
+		  trackName: "纪念",
+		  trackArtist: "雷雨心",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/Sbazzo  -  Sorrow(HD).mp3",
+		  thumb: "thumbs/ps顶顶顶b.webp",
+		  trackName: "Sorrow",
+		  trackArtist: "SBazzo",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/Uu  -  那女孩对我说 (完整版)(HD).mp3",
+		  thumb: "thumbs/p顶顶顶是sb.webp",
+		  trackName: "那女孩对我说",
+		  trackArtist: "Uu",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/阿妹啊  -  浪够了再回来(HD).mp3",
+		  thumb: "thumbs/p54552sb.webp",
+		  trackName: "浪够了再回来",
+		  trackArtist: "阿妹啊",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/阿虾  -  盛夏的果实（Cover：莫文蔚）(HD).mp3",
+		  thumb: "thumbs/p44433sb.webp",
+		  trackName: "盛夏的果实",
+		  trackArtist: "阿虾",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/阿祥  -  刘明湘-漂洋过海来看你(抖音版ProgHouse)（阿祥 remix）(HD).mp3",
+		  thumb: "thumbs/ps大飒飒b.webp",
+		  trackName: "漂洋过海来看你",
+		  trackArtist: "刘明湘",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/爱吃巧乐兹 - 你那么爱她 (Live).mp3",
+		  thumb: "thumbs/p都是对的sb.webp",
+		  trackName: "你那么爱她",
+		  trackArtist: "爱吃巧乐兹",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/傲叔 - 猜不透 (Live).mp3",
+		  thumb: "thumbs/p232566sb.webp",
+		  trackName: "猜不透",
+		  trackArtist: "傲叔",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/陈曦  -  爱在（治愈男版）（Cover：杨梓霖）(HD).mp3",
+		  thumb: "thumbs/ps发的加分加分b.webp",
+		  trackName: "爱在",
+		  trackArtist: "陈曦",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/程佳佳  -  山楂树之恋(HD).mp3",
+		  thumb: "thumbs/p5864sb.webp",
+		  trackName: "山楂树之恋",
+		  trackArtist: "程佳佳",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/程佳佳  -  太阳 (完整版) (Cover：邱振哲)(HD).mp3",
+		  thumb: "thumbs/p烦烦烦edd sb.webp",
+		  trackName: "太阳",
+		  trackArtist: "程佳佳",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/程嘉敏  -  听风的鲸(HD).mp3",
+		  thumb: "thumbs/ps52568b.webp",
+		  trackName: "听风的鲸",
+		  trackArtist: "程嘉敏",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/痴笑 晏鸩  -  拜拜（Cover：浙音4811（一个大金意））(HD).mp3",
+		  thumb: "thumbs/ps655b.webp",
+		  trackName: "拜拜",
+		  trackArtist: "晏鸩",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/崔晓茶 清疏  -  我拈来一缕春风（偷跑的落！）（Cover：艾辰）(HD).mp3",
+		  thumb: "thumbs/pd54d58 sb.webp",
+		  trackName: "我拈来一缕春风（偷跑的落！）（Cover：艾辰）",
+		  trackArtist: "崔晓茶 清疏",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/大柯 夜尢  -  失眠飞行（Cover：接个吻，开一枪）(HD).mp3",
+		  thumb: "thumbs/ps343db.webp",
+		  trackName: "失眠飞行（Cover：接个吻，开一枪）",
+		  trackArtist: "大柯 夜尢",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/大邱  -  一直很安静（Acoustic）（Cover：阿桑）(HD).mp3",
+		  thumb: "thumbs/ps8888b.webp",
+		  trackName: "一直很安静（Acoustic）（Cover：阿桑）",
+		  trackArtist: "大邱",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/耳朵玥  -  时迁(HD).mp3",
+		  thumb: "thumbs/ps45454b.webp",
+		  trackName: "时迁",
+		  trackArtist: "耳朵玥",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/隔壁老樊  -  四块五(HD).mp3",
+		  thumb: "thumbs/psd8d8b.webp",
+		  trackName: "四块五",
+		  trackArtist: "隔壁老樊",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/勾心  -  牧马城市 毛不易（Cover：An-Y）(HD).mp3",
+		  thumb: "thumbs/pd784dsb.webp",
+		  trackName: "牧马城市",
+		  trackArtist: "勾心",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/广东雨神  -  广东十年爱情故事(HD).mp3",
+		  thumb: "thumbs/ps4448989b.webp",
+		  trackName: "广东十年爱情故事",
+		  trackArtist: "广东雨神",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/黄诗扶  -  九万字(HD).mp3",
+		  thumb: "thumbs/ps8899b.webp",
+		  trackName: "九万字",
+		  trackArtist: "黄诗扶",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/姜祺峰  -  宿敌（Cover：许嵩）(HD).mp3",
+		  thumb: "thumbs/pd4d84sb.webp",
+		  trackName: "宿敌",
+		  trackArtist: "姜祺峰",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/蒋雪儿  -  爱河(HD).mp3",
+		  thumb: "thumbs/psdfkkdob.webp",
+		  trackName: "爱河",
+		  trackArtist: "蒋雪儿",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/焦迈奇  -  我的名字(HD).mp3",
+		  thumb: "thumbs/pd74d54sb.webp",
+		  trackName: "我的名字",
+		  trackArtist: "焦迈奇",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/解忧邵帅  -  南风北巷(HD).mp3",
+		  thumb: "thumbs/dd454psb.webp",
+		  trackName: "南风北巷",
+		  trackArtist: "解忧邵帅",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/解忧邵帅  -  你是人间四月天(HD).mp3",
+		  thumb: "thumbs/psd8d56b.webp",
+		  trackName: "你是人间四月天",
+		  trackArtist: "解忧邵帅",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/解忧邵帅  -  写给黄淮(HD).mp3",
+		  thumb: "thumbs/pddoskosb.webp",
+		  trackName: "写给黄淮",
+		  trackArtist: "解忧邵帅",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/井胧  -  把孤独当做晚餐(HD).mp3",
+		  thumb: "thumbs/psbkdopkdio.webp",
+		  trackName: "把孤独当做晚餐",
+		  trackArtist: "井胧",
+		  trackAlbum: "Single",
+		},{
+		  file: "枯木逢春  -  亦是此间少年（demo）(HD).mp3",
+		  thumb: "thumbs/pddkoisb.webp",
+		  trackName: "亦是此间少年（demo）",
+		  trackArtist: "枯木逢春",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/枯木逢春  -  这一生关于你的风景(HD).mp3",
+		  thumb: "thumbs/pddksb.webp",
+		  trackName: "这一生关于你的风景",
+		  trackArtist: "枯木逢春",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/蓝心羽  -  年少有为 (Cover 李荣浩)(HD).mp3",
+		  thumb: "thumbs/pd74d74sb.webp",
+		  trackName: "年少有为",
+		  trackArtist: "蓝心羽",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/浪子康  -  华晨宇-烟火里的尘埃（咚鼓版）（浪子康 remix）(HD).mp3",
+		  thumb: "thumbs/psddkob.webp",
+		  trackName: "烟火里的尘埃（咚鼓版）（浪子康",
+		  trackArtist: "华晨宇",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/澪恩Seiwen  -  雅俗共赏（女生版）（Cover：许嵩）(HD).mp3",
+		  thumb: "thumbs/psb地等5.webp",
+		  trackName: "雅俗共赏（女生版）（Cover：许嵩）",
+		  trackArtist: "澪恩Seiwen",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/刘安琪  -  七月上（Cover Jam）(HD).mp3",
+		  thumb: "thumbs/psd7db.webp",
+		  trackName: "七月上（Cover",
+		  trackArtist: "刘安琪",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/吕口口  -  我要的（完整版）(HD).mp3",
+		  thumb: "thumbs/psdd54b.webp",
+		  trackName: "我要的（完整版）",
+		  trackArtist: "吕口口",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/麦小兜  -  9420(HD).mp3",
+		  thumb: "thumbs/psbdiujdsui .webp",
+		  trackName: "9420",
+		  trackArtist: "麦小兜",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/苏以北  -  我走后（抖音版）（Cover：小咪）(HD).mp3",
+		  thumb: "thumbs/djdhudipsb.webp",
+		  trackName: "我走后（抖音版）（Cover：小咪）",
+		  trackArtist: "苏以北",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/王贰浪  -  你是年少的欢喜(HD).mp3",
+		  thumb: "thumbs/d478d48psb.webp",
+		  trackName: "你是年少的欢喜",
+		  trackArtist: "王贰浪",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/王巨星  -  画(HD).mp3",
+		  thumb: "thumbs/diusdiupsb.webp",
+		  trackName: "画",
+		  trackArtist: "王巨星",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/王小帅  -  最近 (Live)(HD).mp3",
+		  thumb: "thumbs/ddodpsb.webp",
+		  trackName: "最近",
+		  trackArtist: "王小帅",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/王雨澄  -  那个女孩（Cover：张泽熙）(HD).mp3",
+		  thumb: "thumbs/ddijojpsb.webp",
+		  trackName: "那个女孩（Cover：张泽熙）",
+		  trackArtist: "王雨澄",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/小嘉玲  -  怎么了-女版（Cover：周兴哲）(HD).mp3",
+		  thumb: "thumbs/psdkodkob.webp",
+		  trackName: "怎么了-女版（Cover：周兴哲）",
+		  trackArtist: "小嘉玲",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/小嗖米  -  遇到(HD).mp3",
+		  thumb: "thumbs/ddjipsb.webp",
+		  trackName: "遇到",
+		  trackArtist: "小嗖米",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/小眼鑫  -  秋天不回来（Cover：王强）(HD).mp3",
+		  thumb: "thumbs/pdodosb.webp",
+		  trackName: "秋天不回来（Cover：王强）",
+		  trackArtist: "小眼鑫",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/丫蛋蛋 沈虫虫  -  月牙湾(HD).mp3",
+		  thumb: "thumbs/5556psb.webp",
+		  trackName: "月牙湾",
+		  trackArtist: "丫蛋蛋 沈虫虫",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/杨胖雨  -  情深深雨濛濛(HD).mp3",
+		  thumb: "thumbs/pdddsb.webp",
+		  trackName: "情深深雨濛濛",
+		  trackArtist: "杨胖雨",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/音阙诗听 赵方婧  -  芒种(HD).mp3",
+		  thumb: "thumbs/pddddasb.webp",
+		  trackName: "芒种",
+		  trackArtist: "音阙诗听 赵方婧",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/于大海（于黑蛋）  -  从没有爱过 (男声独唱版)(HD).mp3",
+		  thumb: "thumbs/pffisb.webp",
+		  trackName: "从没有爱过",
+		  trackArtist: "于大海（于黑蛋）",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/鱼大仙儿  -  我曾（Cover：隔壁老樊）(HD).mp3",
+		  thumb: "thumbs/pdidodkosb.webp",
+		  trackName: "我曾（Cover：隔壁老樊）",
+		  trackArtist: "鱼大仙儿",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/占二曦  -  问（Cover：陈淑桦）(HD).mp3",
+		  thumb: "thumbs/diudipsb.webp",
+		  trackName: "问（Cover：陈淑桦）",
+		  trackArtist: "占二曦",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/张靓颖 马臻  -  我的梦 (Live)(HD).mp3",
+		  thumb: "thumbs/psfjfiob.webp",
+		  trackName: "我的梦",
+		  trackArtist: "张靓颖 马臻",
+		  trackAlbum: "Single",
+		},{
+		  file: "tracks/周思涵  -  过客(HD).mp3",
+		  thumb: "thumbs/pfopfosb.jpg",
+		  trackName: "过客",
+		  trackArtist: "周思涵",
+		  trackAlbum: "Single",
+		}
+	],
+	autoPlay:true
+}
+
+$(".jAudio--player").jAudio(t);
+</script>
+
+<div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+<p>适用浏览器：360、FireFox、Chrome、Safari、Opera、傲游、搜狗、世界之窗. 不支持IE8及以下浏览器。</p>
+
+</div>
+</body>
+</html>
+
+
+
+,{
+		  file: "tracks/03.mp3",
+		  thumb: "thumbs/03.jpg",
+		  trackName: "Fade",
+		  trackArtist: "Alan Walker",
+		  trackAlbum: "Single",
+		}
